@@ -1,7 +1,9 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { SwaggerModule } from '@nestjs/swagger';
-import { swaggerOptions } from './lib/swagger/swagger';
+import { AppModule } from './app.module.js';
+import { swaggerOptions } from './lib/swagger/swagger.js';
+import { HOST, PORT } from './lib/env/index.js';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -28,10 +30,13 @@ async function bootstrap() {
       }
     },
   }, swaggerOptions);
-  SwaggerModule.setup('swagger', app, documentFactory, {
+  SwaggerModule.setup('docs', app, documentFactory, {
     jsonDocumentUrl: 'swagger/json',
   });
 
-  await app.listen(3000);
+  await app.listen(PORT,HOST,()=>{
+    console.log(`Server is running on http://${HOST}:${PORT}\nCheck api documentation at http://${HOST}:${PORT}/docs`);
+    console.log('Cache stores initialized: Memory and Redis, running redis at: redis://localhost:6379');
+  });
 }
 bootstrap();
