@@ -8,7 +8,11 @@ export const {
     NODE_ENV,
     REDIS_URL,
     PORT,
-    HOST
+    HOST,
+    MINIO_HOST,
+    MINIO_ACCESS_KEY,
+    MINIO_SECRET_KEY,
+    MINIO_BUCKET_NAME
 } = z.object({
     DATABASE_URL: z.string().url(),
     NODE_ENV:z.enum(["development", "production", "test"]),
@@ -16,5 +20,8 @@ export const {
     MINIO_URL:z.string().url(),
     PORT:z.string().regex(/^\d+$/).transform(Number),
     HOST:z.string(),
-
+    MINIO_HOST:z.string(),
+    MINIO_ACCESS_KEY:z.string(),
+    MINIO_SECRET_KEY:z.string(),
+    MINIO_BUCKET_NAME:z.string()
 }).parse(process.env);

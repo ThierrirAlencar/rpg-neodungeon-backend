@@ -1,1 +1,6 @@
 Contains use cases, command/query handlers, and application services. It depends on the Domain layer.
+
+microservices/
+    microservice layer of the app (includes services like redis, rabbitMq, and others)
+services 
+    services layer of the app includes all application services. 
