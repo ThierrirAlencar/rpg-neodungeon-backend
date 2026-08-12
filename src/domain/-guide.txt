@@ -1,0 +1,1 @@
+Contains entities, value objects, and repository interfaces (ports). It has zero dependency on NestJS or external frameworks.

@@ -1,0 +1,1 @@
+Contains use cases, command/query handlers, and application services. It depends on the Domain layer.

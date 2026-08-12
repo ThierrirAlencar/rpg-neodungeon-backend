@@ -1,0 +1,121 @@
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum status {
+  ACTIVE
+  INACTIVE
+  DELETED
+}
+
+// User (model)
+model user {
+  id        String      @id @default(uuid())
+  email     String   @unique
+  name      String?
+
+  //default tables (common to every table)
+  status    status   @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("users") //user table name in the database
+
+  //Relations
+  tokens rpg_token[] //rpg tokens
+  auth_tokens auth_token[] //authentication tokens (may be used for different purposes, like password reset, email verification, etc)
+}
+
+//Auth token is a token that is used to authenticate a user (may be used for different purposes, like password reset, email verification, etc)
+model auth_token{
+  id        String      @id @default(cuid())
+  token     String   @unique
+  expiresAt DateTime
+
+  //default tables (common to every table)
+  status    status   @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("auth_tokens") //auth_token table name in the database
+
+  //Relations
+  userId    String
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+//RPG tokens are the general representation of a rpg sheet assigned to user (may be from different systens)
+model rpg_token {
+  id        String      @id @default(cuid())
+  
+  token_json_url String //url to the json file that contains the token data (stored on minIO);
+  token_json_changed_at DateTime @default(now()) //last time the json file was changed (used to check if the json file needs to be updated)
+  token_json_slug String @unique //public slug used to access the token json file (used to access the token json file without exposing the token id)
+
+  //default tables (common to every table)
+  status    status   @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("tokens") //token table name in the database
+
+  //Relations
+  userId    String
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  social rpg_token_social?
+}
+
+//carries to public information display of a token
+model rpg_token_social {
+  id        String      @id @default(cuid())
+  //token     String   @unique
+  
+  public Boolean @default(false)
+  public_name String? 
+  public_description String?
+  //public_image String? //may be stored in a cdn or in the database as base64 (define that later)
+
+
+  //default tables (common to every table)
+  status    status   @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("tokens_social") //token_social table name in the database
+  
+  //relations
+  token_id   String @unique
+  token      rpg_token?     @relation(fields: [token_id], references: [id], onDelete: Cascade)
+
+  public_images rpg_token_social_image[]
+}
+
+//Just the images of an rpg_token_social
+model rpg_token_social_image {
+  id        String      @id @default(cuid())
+  image     String   @unique //Should be stored at MinIO and the url should be stored here
+
+  //default tables (common to every table)
+  status    status   @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("tokens_social_images") //token_social_images table name in the database
+
+  //relations
+  token_social_id   String
+  token_social      rpg_token_social?     @relation(fields: [token_social_id], references: [id], onDelete: Cascade)
+
+}
