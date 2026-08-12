@@ -9,9 +9,11 @@ import { PrismaService } from './application/services/prisma/prisma-service.serv
 import { RedisModule } from './modules/redis/redis.module.js';
 import { ConfigModule } from '@nestjs/config';
 import { MinIoModule } from './modules/storage/minio.module.js';
+import { RepositoryModule } from './modules/repository/repository.module.js';
 
 @Module({
   imports: [
+    RepositoryModule, //Database Repositories
     AuthModule, //Autentication module
     RedisModule, //Cache Module for Redis
     CacheModule.registerAsync({ //Cache Module for Memory and Redis
