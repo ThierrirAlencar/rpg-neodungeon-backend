@@ -13,7 +13,7 @@ export class prismaUserRepository implements userRepository{
 
     }
     
-    async create(data: userCreateInput): Promise<{ name: string | null; id: string; email: string; status: status; createdAt: Date; updatedAt: Date; deletedAt: Date | null; }> {
+    async create(data: userCreateInput): Promise<{password:string; name: string | null; id: string; email: string; status: status; createdAt: Date; updatedAt: Date; deletedAt: Date | null; }> {
         return await this.client.user.create({
             data
         })
@@ -52,7 +52,7 @@ export class prismaUserRepository implements userRepository{
         })
     }
 
-    async findById(id: string): Promise<{ name: string | null; id: string; email: string; status: status; createdAt: Date; updatedAt: Date; deletedAt: Date | null; } | null> {
+    async findById(id: string): Promise<{password:string; name: string | null; id: string; email: string; status: status; createdAt: Date; updatedAt: Date; deletedAt: Date | null; } | null> {
         return await this.client.user.findUnique({
             where:{
                 id

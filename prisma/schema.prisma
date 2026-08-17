@@ -16,9 +16,11 @@ enum status {
 
 // User (model)
 model user {
+  
   id        String      @id @default(uuid())
-  email     String   @unique
+  email     String      @unique
   name      String?
+  password  String
 
   //default tables (common to every table)
   status    status   @default(ACTIVE)

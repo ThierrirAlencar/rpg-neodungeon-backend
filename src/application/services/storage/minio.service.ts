@@ -4,7 +4,7 @@ import { ConfigService } from "@nestjs/config";
 import { MINIO_ACCESS_KEY, MINIO_HOST, MINIO_SECRET_KEY, MINIO_BUCKET_NAME } from "../../../lib/env/index.js";
 import {Express} from "express";
 import { Multer } from "multer" ;
-import { MulterUploadError } from "../../../domain/Errors/multerErrors.js";
+import { MulterUploadError } from "../../../domain/errors/multerErrors.js";
  
 @Injectable()
 export class MinIoService implements OnModuleInit {

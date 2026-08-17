@@ -12,7 +12,7 @@ export const {
     MINIO_HOST,
     MINIO_ACCESS_KEY,
     MINIO_SECRET_KEY,
-    MINIO_BUCKET_NAME
+    MINIO_BUCKET_NAME,
 } = z.object({
     DATABASE_URL: z.string().url(),
     NODE_ENV:z.enum(["development", "production", "test"]),

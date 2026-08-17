@@ -5,14 +5,15 @@ import { Keyv } from 'keyv';
 import { KeyvCacheableMemory } from 'cacheable';
 import KeyvRedis from '@keyv/redis';
 import { AuthModule } from './modules/auth/auth.module.js';
-import { PrismaService } from './application/services/prisma/prisma-service.service.js';
 import { RedisModule } from './modules/redis/redis.module.js';
 import { ConfigModule } from '@nestjs/config';
 import { MinIoModule } from './modules/storage/minio.module.js';
 import { RepositoryModule } from './modules/repository/repository.module.js';
+import { PrismaModule } from './modules/prisma/prisma.module.js';
 
 @Module({
   imports: [
+    PrismaModule, //Database Service
     RepositoryModule, //Database Repositories
     AuthModule, //Autentication module
     RedisModule, //Cache Module for Redis
@@ -32,6 +33,6 @@ import { RepositoryModule } from './modules/repository/repository.module.js';
     MinIoModule //Storage Module for MinIO
   ],
   controllers: [],
-  providers: [PrismaService],
+  providers: [],
 })
 export class AppModule {}

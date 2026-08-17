@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
-import { SwaggerModule } from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module.js';
-import { swaggerOptions } from './lib/swagger/swagger.js';
+import { config as swaggerConfig, swaggerOptions } from './lib/swagger/swagger.js';
 import { HOST, PORT } from './lib/env/index.js';
 
 
@@ -14,25 +14,15 @@ async function bootstrap() {
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
-  const documentFactory = () => SwaggerModule.createDocument(app, {
-    openapi: '3.0.0',
-    info: {
-      title: 'NeoDungeon API',
-      version: '1.0.0',
-      description: 'API documentation for NeoDungeon',
-      license:{
-        name: 'MIT',
-        url: 'https://opensource.org/licenses/MIT'
-      },
-      contact:{
-        name: 'NeoDungeon Team',
-        email: "contact@neodungeon.com"
-      }
-    },
-  }, swaggerOptions);
+
+
+  
+  const documentFactory = () => SwaggerModule.createDocument(app, swaggerConfig, swaggerOptions);
+
   SwaggerModule.setup('docs', app, documentFactory, {
     jsonDocumentUrl: 'swagger/json',
   });
+
 
   await app.listen(PORT,HOST,()=>{
     console.log(`Server is running on http://${HOST}:${PORT}\nCheck api documentation at http://${HOST}:${PORT}/docs`);
