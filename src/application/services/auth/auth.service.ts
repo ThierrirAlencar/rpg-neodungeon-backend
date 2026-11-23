@@ -86,10 +86,11 @@ export class AuthService {
             });
 
             const return_object = {
-                ..._parse_to_safety,
                 auth_token:jwt_token,
                 auth_token_expires_in: jwt_token_expires_in,
-                auth_token_registry_id:stored_auth_token.id
+                auth_token_registry_id:stored_auth_token.id,
+                email:_parse_to_safety.email,
+                username:_parse_to_safety.username
             };
 
             await this.redisService.set(key,return_object)

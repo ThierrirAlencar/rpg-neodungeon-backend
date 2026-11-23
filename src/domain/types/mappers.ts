@@ -12,7 +12,6 @@ export type safeUserMapper = {
 
 export type safeUserAuthResponse = {
     email:string,
-    password:string,
     username:string | null,
     auth_token:string,
     auth_token_expires_in:Date,
