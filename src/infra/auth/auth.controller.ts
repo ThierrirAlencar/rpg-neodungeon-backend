@@ -70,7 +70,7 @@ export class AuthController {
             res.status(200).send({
                 status:200,
                 description:"Logged-in Successfully!",
-                _response:_response //should throw a token latter on
+                _response:_response
             })
         }catch(err){
             if(err instanceof authError){

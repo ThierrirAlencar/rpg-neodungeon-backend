@@ -13,6 +13,8 @@ export const {
     MINIO_ACCESS_KEY,
     MINIO_SECRET_KEY,
     MINIO_BUCKET_NAME,
+    JWT_EXPIRES_IN,
+    JWT_SECRET
 } = z.object({
     DATABASE_URL: z.string().url(),
     NODE_ENV:z.enum(["development", "production", "test"]),
@@ -23,5 +25,7 @@ export const {
     MINIO_HOST:z.string(),
     MINIO_ACCESS_KEY:z.string(),
     MINIO_SECRET_KEY:z.string(),
-    MINIO_BUCKET_NAME:z.string()
+    MINIO_BUCKET_NAME:z.string(),
+    JWT_SECRET:z.string(),
+    JWT_EXPIRES_IN:z.string()
 }).parse(process.env);

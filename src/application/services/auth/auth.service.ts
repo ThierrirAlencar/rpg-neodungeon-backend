@@ -1,18 +1,23 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { prismaUserRepository } from "../../../domain/repository/user/prismaUserRepository.js";
 import { RedisService } from "../redis/redis.service.js";
 import {compare, hash} from "bcryptjs"
 import { PASSWORD_SALT } from "../../../config/config.js";
-import { safeUserMapper, unsafeUserMapper, userLoginMapper, userRegisterMapper } from "../../../domain/types/mappers.js";
+import { safeUserAuthResponse, safeUserMapper, unsafeUserMapper, userLoginMapper, userRegisterMapper } from "../../../domain/types/mappers.js";
 import { authTokenRepository } from "../../../domain/repository/auth_token/auth_tokenRepository.js";
+import { PrismaAuthTokenRepository } from "../../../domain/repository/auth_token/prismaAuthTokenRepository.js";
 import { userRepository } from "../../../domain/repository/user/userRepository.js";
 import { AccountAlreadyExistsError, AccountDoesNotExistsError, WrongPasswordError } from "../../../domain/Errors/authError.js";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly userRepositorie: prismaUserRepository,
         private readonly redisService: RedisService,
+        @Inject(PrismaAuthTokenRepository)
+        private readonly authTokenRepositorie: authTokenRepository,
+        private readonly jwtService:JwtService
     ){}
 
     async register(data:userRegisterMapper):Promise<safeUserMapper>{
@@ -38,12 +43,12 @@ export class AuthService {
     }
 
     //TODO - use auth token repositorie to build auth tokens
-    async login(data:userLoginMapper):Promise<unsafeUserMapper>{
+    async login(data:userLoginMapper):Promise<safeUserAuthResponse>{
         const key = `login-${data.email}-${data.password}`
         const storedOnCache = await this.redisService.get(key)
 
         if(storedOnCache){
-            return storedOnCache as unsafeUserMapper;
+            return storedOnCache as safeUserAuthResponse;
         }
 
         const _find = await this.userRepositorie.findByEmail(data.email);
@@ -60,14 +65,39 @@ export class AuthService {
                 username:_find.name,
                 id:_find.id
             }
-            const storeOnCache = await this.redisService.set(key,_parse_to_safety)
 
-            return _parse_to_safety;
+            console.log("prejwtsign")
+            //JWT generation logic
+            const jwt_token = this.jwtService.sign({ sub: _parse_to_safety.id })
 
+            console.log("prejwtdecode")
+            // Read the exp claim (seconds since epoch) from the token we just signed
+            const { exp } = this.jwtService.decode(jwt_token) as { exp: number };
+
+            //Get the expires in date
+            const jwt_token_expires_in = new Date(exp * 1000)
+
+            console.log("preprismagenerationoftoken")
+            //Stores the auth token on doctrine
+            const stored_auth_token = await this.authTokenRepositorie.create({
+                token: jwt_token,
+                expiresAt: jwt_token_expires_in,
+                userId:_parse_to_safety.id
+            });
+
+            const return_object = {
+                ..._parse_to_safety,
+                auth_token:jwt_token,
+                auth_token_expires_in: jwt_token_expires_in,
+                auth_token_registry_id:stored_auth_token.id
+            };
+
+            await this.redisService.set(key,return_object)
+
+            return return_object
         }else{
             throw new WrongPasswordError();
         }
     }
-
 
 }

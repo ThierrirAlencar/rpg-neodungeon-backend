@@ -4,6 +4,7 @@ import { PrismaRpgTokenRepository } from "../../domain/repository/rpg_token/pris
 import { PrismaRpgTokenSocialImageRepository } from "../../domain/repository/rpg_token_social_image/PrismaRpgTokenSocialImageRepository.js";
 import { PrismaRpgTokenSocialRepository } from "../../domain/repository/rpg_token_social/PrismaRpgTokenSocialRepository.js";
 import { PrismaModule } from "../prisma/prisma.module.js";
+import { PrismaAuthTokenRepository } from "../../domain/repository/auth_token/prismaAuthTokenRepository.js";
 
 
 @Module({
@@ -12,13 +13,15 @@ import { PrismaModule } from "../prisma/prisma.module.js";
         prismaUserRepository,
         PrismaRpgTokenRepository,
         PrismaRpgTokenSocialImageRepository,
-        PrismaRpgTokenSocialRepository
+        PrismaRpgTokenSocialRepository,
+        PrismaAuthTokenRepository
     ],
     exports:[
         prismaUserRepository,
         PrismaRpgTokenRepository,
         PrismaRpgTokenSocialImageRepository,
-        PrismaRpgTokenSocialRepository
+        PrismaRpgTokenSocialRepository,
+        PrismaAuthTokenRepository
     ]
 })
 export class RepositoryModule{}
