@@ -7,7 +7,7 @@ import KeyvRedis from '@keyv/redis';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { RedisModule } from './modules/redis/redis.module.js';
 import { ConfigModule } from '@nestjs/config';
-import { MinIoModule } from './modules/storage/minio.module.js';
+//import { MinIoModule } from './modules/storage/minio.module.js';
 import { RepositoryModule } from './modules/repository/repository.module.js';
 import { PrismaModule } from './modules/prisma/prisma.module.js';
 
@@ -30,7 +30,7 @@ import { PrismaModule } from './modules/prisma/prisma.module.js';
     ConfigModule.forRoot({ //Config Module for Environment Variables
       isGlobal: true
     }),
-    MinIoModule //Storage Module for MinIO
+    //MinIoModule //Storage Module for MinIO
   ],
   controllers: [],
   providers: [],

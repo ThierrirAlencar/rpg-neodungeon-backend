@@ -3,8 +3,8 @@ import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../../application/services/auth/auth.service.js';
 import { authLoginDTO, authRegisterBodyDTO, authRegisterResponseDTO} from '../../domain/schemas/authSchemas.js';
 import { Response } from 'express';
-import { AccountAlreadyExistsError, authError } from '../../domain/errors/authError.js';
 import z from 'zod';
+import { authError } from '../../domain/Errors/authError.js';
 
 @ApiTags("Auth")
 @Controller('auth')

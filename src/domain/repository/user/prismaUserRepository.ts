@@ -45,6 +45,7 @@ export class prismaUserRepository implements userRepository{
     }
 
     async findByEmail(email: string): Promise<user | null> {
+        console.log(email)
         return await this.client.user.findUnique({
             where:{
                 email

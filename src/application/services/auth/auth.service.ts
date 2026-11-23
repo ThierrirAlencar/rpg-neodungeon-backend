@@ -3,10 +3,10 @@ import { prismaUserRepository } from "../../../domain/repository/user/prismaUser
 import { RedisService } from "../redis/redis.service.js";
 import {compare, hash} from "bcryptjs"
 import { PASSWORD_SALT } from "../../../config/config.js";
-import { AccountAlreadyExistsError, AccountDoesNotExistsError, WrongPasswordError } from "../../../domain/errors/authError.js";
 import { safeUserMapper, unsafeUserMapper, userLoginMapper, userRegisterMapper } from "../../../domain/types/mappers.js";
 import { authTokenRepository } from "../../../domain/repository/auth_token/auth_tokenRepository.js";
 import { userRepository } from "../../../domain/repository/user/userRepository.js";
+import { AccountAlreadyExistsError, AccountDoesNotExistsError, WrongPasswordError } from "../../../domain/Errors/authError.js";
 
 @Injectable()
 export class AuthService {
