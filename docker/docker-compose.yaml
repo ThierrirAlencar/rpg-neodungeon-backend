@@ -15,7 +15,7 @@ services:
     restart: unless-stopped
   
   bucket-service:
-    image: minio/minio
+    image: elestio/minio
     container_name: neod_bucket-service
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
