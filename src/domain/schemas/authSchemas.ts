@@ -1,8 +1,6 @@
-import z, { object } from "zod";
 import { BaseSchema, BaseSchemaResponse } from "./baseSchema.js";
-import { SafeUserDto } from "../../infra/dto/userMapper.js";
-import { ApiBody, ApiProperty } from "@nestjs/swagger";
-import { safeUserMapper } from "../types/mappers.js";
+import { SafeUserDto, SafeUserLoginResponse, SafeUserProfileResponse } from "../../infra/dto/userMapper.js";
+import { ApiProperty } from "@nestjs/swagger";
 
 
 export abstract class authRegisterBodyDTO extends BaseSchema{
@@ -21,9 +19,18 @@ export abstract class authLoginDTO extends BaseSchema{
     password:string = ""
 }
 
-export abstract class authRegisterResponseDTO extends BaseSchemaResponse {
-    @ApiProperty({name:"body",description:"A response body containing the safe user object of interest",type:"string"})
-    body: safeUserMapper = {
-        email:"",password:"",username:""
-    };
+export class AuthRegisterResponseDto extends BaseSchemaResponse {
+    @ApiProperty({ description: "The registered user", type: SafeUserDto })
+    declare body: SafeUserDto;
 }
+
+export class AuthLoginResponseDto extends BaseSchemaResponse {
+    @ApiProperty({ description: "The authenticated user and token", type: SafeUserLoginResponse })
+    declare body: SafeUserLoginResponse;
+}
+
+export class AuthProfileResponseDto extends BaseSchemaResponse {
+    @ApiProperty({ description: "The profile of the authenticated user", type: SafeUserLoginResponse })
+    declare body: SafeUserProfileResponse;
+}
+

@@ -21,3 +21,9 @@ export class WrongPasswordError extends authError {
         super("Wrong Password, try again!")
     }
 } 
+
+export class InvalidAuthTokenError extends authError {
+    constructor(){
+        super("Invalid or expired authentication token")
+    }
+}

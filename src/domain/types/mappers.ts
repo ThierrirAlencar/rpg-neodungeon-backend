@@ -1,3 +1,5 @@
+import { status } from "../../../prisma/generated/prisma/enums.js"
+
 export type userRegisterMapper = {
     email:string,
     password:string,
@@ -8,6 +10,15 @@ export type safeUserMapper = {
     email:string,
     password:string,
     username:string | null,
+}
+
+export type safeUserProfileMapper = {
+    email:string,
+    username:string | null,
+    created_at:Date,
+    updated_at?:Date | null,
+    deleted_at?:Date | null,
+    status:status
 }
 
 export type safeUserAuthResponse = {

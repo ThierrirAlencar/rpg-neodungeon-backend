@@ -7,6 +7,7 @@ import { RedisService } from '../../application/services/redis/redis.service.js'
 import { JwtModule } from '@nestjs/jwt';
 import { JWT_EXPIRES_IN, JWT_SECRET } from '../../lib/env/index.js';
 import ms from 'ms';
+import { JwtStrategy } from '../../application/services/auth/auth.strategy.js';
 
 
 
@@ -20,6 +21,6 @@ import ms from 'ms';
                 signOptions: { expiresIn: JWT_EXPIRES_IN as ms.StringValue },
             }),
         ],
-    providers:[AuthService,RedisService],
+    providers:[AuthService,RedisService,JwtStrategy],
 })
 export class AuthModule {}

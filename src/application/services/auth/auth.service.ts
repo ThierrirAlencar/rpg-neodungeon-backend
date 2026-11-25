@@ -3,12 +3,13 @@ import { prismaUserRepository } from "../../../domain/repository/user/prismaUser
 import { RedisService } from "../redis/redis.service.js";
 import {compare, hash} from "bcryptjs"
 import { PASSWORD_SALT } from "../../../config/config.js";
-import { safeUserAuthResponse, safeUserMapper, unsafeUserMapper, userLoginMapper, userRegisterMapper } from "../../../domain/types/mappers.js";
+import { safeUserAuthResponse, safeUserMapper, safeUserProfileMapper, unsafeUserMapper, userLoginMapper, userRegisterMapper } from "../../../domain/types/mappers.js";
 import { authTokenRepository } from "../../../domain/repository/auth_token/auth_tokenRepository.js";
 import { PrismaAuthTokenRepository } from "../../../domain/repository/auth_token/prismaAuthTokenRepository.js";
 import { userRepository } from "../../../domain/repository/user/userRepository.js";
-import { AccountAlreadyExistsError, AccountDoesNotExistsError, WrongPasswordError } from "../../../domain/Errors/authError.js";
+import { AccountAlreadyExistsError, AccountDoesNotExistsError, InvalidAuthTokenError, WrongPasswordError } from "../../../domain/Errors/authError.js";
 import { JwtService } from "@nestjs/jwt";
+import { SafeUserDto } from "../../../infra/dto/userMapper.js";
 
 @Injectable()
 export class AuthService {
@@ -42,7 +43,6 @@ export class AuthService {
         }
     }
 
-    //TODO - use auth token repositorie to build auth tokens
     async login(data:userLoginMapper):Promise<safeUserAuthResponse>{
         const key = `login-${data.email}-${data.password}`
         const storedOnCache = await this.redisService.get(key)
@@ -100,5 +100,39 @@ export class AuthService {
             throw new WrongPasswordError();
         }
     }
+
+    async whoami(id:string):Promise<safeUserProfileMapper>{
+        const key = `whoami-${id}`
+        const storedOnCache = await this.redisService.get(key)
+
+        if(storedOnCache){
+            return storedOnCache as safeUserProfileMapper;
+        }
+
+        const _find = await this.userRepositorie.findById(id);
+
+        if(!_find){
+            throw new AccountDoesNotExistsError()
+        }
+        
+
+        const response:safeUserProfileMapper = {
+            email: _find.email,
+            username:_find.name || "unamed",
+            created_at:_find.createdAt,
+            deleted_at:_find.deletedAt,
+            updated_at:_find.updatedAt,
+            status:_find.status
+        }
+
+        //Before finishing, store result on redis for future use. 
+        await this.redisService.set(key,response)
+
+        return response
+    }
+
+    ///TODO - Password recuperation email routine
+
+
 
 }

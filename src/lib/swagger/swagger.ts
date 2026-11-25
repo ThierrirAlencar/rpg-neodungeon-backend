@@ -15,4 +15,13 @@ export const config = new DocumentBuilder()
     .addTag("Auth","authentication routes", undefined , {kind:"nav",summary:"authentication routes"})
     .addTag("user","user management routes", undefined , {kind:"nav",summary:"user management routes"})
     .addTag("templates","template information GETs", undefined , {kind:"nav",summary:"template information GETs"})
+    .addBearerAuth(
+      {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+        description: "Enter the JWT returned by the login endpoint.",
+      },
+      "Authentication"
+    )
     .build()
